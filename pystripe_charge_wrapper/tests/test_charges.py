@@ -14,7 +14,7 @@ card_scenarios = {'card_declined': '4000000000000002',
 class TestStripeCharges(TestCase):
     """Test the stripe charge functionality."""
 
-    stripe_api_key = getattr(settings, "stripe_api_key")
+    stripe_api_key = getattr(settings, "TEST_STRIPE_SECRET")
     card = {'currency': "USD", 'amount': cl.get_price(), 
             'exp_month': '1', 'exp_year': '2016', 
             'cvc': '222', 'number': '4242424242424242'}
