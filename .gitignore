@@ -1,7 +1,8 @@
 *.pyc
-*.egg-info
+*.swp
 *DS_*
-*build*
-*dist*
-*.sqlite*
 *local_settings.py*
+*build/
+*dist/
+*.egg-info*
+*db_data.sql*
