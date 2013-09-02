@@ -1,5 +1,9 @@
+import sys
 from unittest import TestCase, TestSuite, TextTestRunner
 from decimal import Decimal
+from termprint import *
+sys.path.append('../')
+from pystripe_charges import *
 
 try:
     import test_settings as settings
@@ -10,13 +14,14 @@ except ImportError:
 card_scenarios = {'card_declined': '4000000000000002',
                   'incorrect_number': '42424242424241'}
 
+# debug types
+i, e, w = "INFO", "ERROR", "WARNING"
 
 class TestStripeCharges(TestCase):
     """Test the stripe charge functionality."""
 
     stripe_api_key = getattr(settings, "TEST_STRIPE_SECRET")
-    card = {'currency': "USD", 'amount': cl.get_price(),
-            'exp_month': '1', 'exp_year': '2016',
+    card = {'exp_month': '1', 'exp_year': '2016',
             'cvc': '222', 'number': '4242424242424242'}
 
     def setUp(self):
@@ -24,21 +29,26 @@ class TestStripeCharges(TestCase):
             raise Exception("No valid api key found.")
             sys.exit(1)
 
+
     def __init_stripe(self):
         """ Return a stripe init. """
         return StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
 
+
     def test_charge(self):
         """Test the charges."""
+        termprint(i, "Testing Charge...")
         cl = self.__init_stripe()
         self.assertEquals(getattr(cl, "stripe_api_key"), getattr(self, "stripe_api_key"))
-
         cl.set_price('1.00')
         self.assertEquals(cl.get_price(), Decimal('1.00'))
-
+        charge_id = cl.create_charge(self.card)
+        response = cl.capture_charge()
+        
 
     def test_create_captured_charge(self):
         """ Test creating a test charge. """
+        termprint(i, "Test create captured charge...")
         cl = self.__init_stripe()
         charge_id = cl.create_charge(self.card)
         self.assertEquals(charge_id, cl.stripe_id)
@@ -47,19 +57,23 @@ class TestStripeCharges(TestCase):
         # charge is already captured!
         self.assertRaises(cl.capture_charge(), Exception)
 
+
     def test_create_uncaptured_charge(self):
         """ Create an uncaptured charge by passing kwarg."""
+        termprint(i, "Test create uncaptured charge.")
         cl = self.__init_stripe()
         charge_id = cl.create_charge(self.card, captured=False)
         self.assertEquals(charge_id, cl.stripe_id)
         # test charge retrieval!
         self.assertTrue(cl.retrieve_charge(id=charge_id))
         self.assertTrue(charge)
-        # charge is already captured!
+        # charge is not captured!
         cl.capture_charge()
+
 
     def test_refund(self):
         """ Test refunding an order """
+        termprint(i, "Test create refund.")
         cl = self.__init_stripe()
         charge_id = cl.create_charge(self.card, captured=True)
         charge = cl.retrieve_charge(id=charge_id)
