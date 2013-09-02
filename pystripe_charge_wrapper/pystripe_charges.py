@@ -78,9 +78,9 @@ class StripeCharges(object):
          - cvc = the card cvc on the back
          - number = the card number
         """
+        capture = 'false'
         if kwargs.get('capture'):
-            if kwargs.get('capture', 'x') == 'false':
-                capture = 'true'
+            capture = 'true'
         if self.get_price() > 0:
             amount = self.to_cents()
             try:
@@ -93,7 +93,7 @@ class StripeCharges(object):
                 self.stripe_object = stripe.Charge.create(
                     currency="usd",
                     amount=amount,
-                    capture=kwargs.get('capture', 'true'),
+                    capture=capture,
                     customer=self.stripe_customer.id
                 )
             except stripe.CardError, e:
@@ -107,6 +107,7 @@ class StripeCharges(object):
     def refund_charge(self):
         """Refunds a charge."""
         stripe.api_key = self.get_api_key()
+        self.retrieve_cjarge(
         try:
             self.stripe_object = stripe.Charge.retrieve(id=self.stripe_id)
         except Exception, e:
@@ -121,11 +122,20 @@ class StripeCharges(object):
     def retrieve_charge(self, **kwargs):
         """Get the stripe Charge() object and return."""
         if kwargs.get('id'):
-            try:
-                self.stripe_object = stripe.Charge.retrieve(id=kwargs.get('id'))
-                return self.stripe_object()
-            except Exception, e:
-                raise Exception("Error Retrieving Charge %s" % e)
+            id = kwargs.get('id')
+        else:
+            id = self.stripe_id
+        if not id:
+            raise Exception("No valid ID sent!")
+        try:
+            test_int = int(id)
+        except ValueError:
+            raise Exception("Not a valid numerical format for ID")
+        try:
+            self.stripe_object = stripe.Charge.retrieve(id=id)
+            return self.stripe_object()
+        except Exception, e:
+            raise Exception("Error Retrieving Charge %s" % e)
 
 
     def capture_charge(self, **kwargs):

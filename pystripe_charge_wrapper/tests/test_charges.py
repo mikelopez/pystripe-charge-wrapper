@@ -82,4 +82,21 @@ class TestStripeCharges(TestCase):
         result = self.assertTrue(cl.refund_charge(charge=charge))
 
 
+    def test_retrieve_charges(self):
+        """Test retrieving the charge."""
+        termprint(i, "Test retrieve charges...")
+        cl = self.__init_stripe()
+        charge_id = cl.create_charge(self.card, captured=False)
+        try:
+            charge = cl.retrieve_charge(id='ass')
+            assert False, "Nah uh, need a valid integer."
+        except ValueError:
+            assert True
+        # shoudl get the latest charge.
+        charge1 = cl.retrieve_charge() 
+        charge2 = cl.retrieve_charge(id=self.id)
+        # now test with a different order
+        new_charge = cl.create_charge(self.card, captured=False)
+
+
 
