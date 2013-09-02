@@ -2,6 +2,7 @@
 *.swp
 *DS_*
 *local_settings.py*
+*test_settings*
 *build/
 *dist/
 *.egg-info*
