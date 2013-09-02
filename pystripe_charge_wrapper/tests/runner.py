@@ -1,8 +1,4 @@
-import os
-import sys
-
-PATH_APPEND = os.path.realpath(os.path.dirname(__file__))
-#sys.path.append('../')
+from test_base import *
 
 from test_charges import TestStripeCharges
 
