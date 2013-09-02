@@ -12,7 +12,7 @@ retrieve and capture them.
 import stripe
 from decimal import Decimal
 
-class PyStripeCharges(object):
+class StripeCharges(object):
     """
     A convenient basic class to help utilize some of 
     stripes payments. Mainly focused on Stripes Charge() feature, 
@@ -71,6 +71,9 @@ class PyStripeCharges(object):
          - cvc = the card cvc on the back
          - number = the card number
         """
+        if kwargs.get('capture'):
+            if kwargs.get('capture', 'x') == 'false':
+                capture = 'true'
         if self.get_price() > 0:
             amount = self.to_cents()
             try:
@@ -83,37 +86,7 @@ class PyStripeCharges(object):
                 self.stripe_object = stripe.Charge.create(
                     currency="usd",
                     amount=amount,
-                    capture='true',
-                    customer=self.stripe_customer.id
-                )
-            except stripe.CardError, e:
-                raise Exception("Charge Card Error: %s" % e)
-            except Exception, e:
-                raise Exception("Charge Exception: %s" % e)
-            self.stripe_id = self.stripe_object.__dict__.get('id')
-            stripe.api_key = None
-
-    def create_uncaptured_charge(self, card):
-        """ Create a captured charge with card
-        Card should be a dictionary with the following keys:
-         - exp_month = cards expire month
-         - exp_year = cards expire year
-         - cvc = the card cvc on the back
-         - number = the card number
-        """
-        if self.get_price() > 0:
-            amount = self.to_cents()
-            try:
-                stripe.api_key = self.get_api_key()
-                if not self.stripe_customer:
-                    self.stripe_customer = stripe.Customer.create(
-                        description='Temporal customer',
-                        card=card
-                    )
-                self.stripe_object = stripe.Charge.create(
-                    currency="usd",
-                    amount=amount,
-                    capture='false',
+                    capture=kwargs.get('capture', 'true'),
                     customer=self.stripe_customer.id
                 )
             except stripe.CardError, e:
