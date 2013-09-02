@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(name='pystripe-charge-wrapper',
       version='0.1',
       description='Class helper to perform Charges in Stripe with Python.',
-      author='',
+      author='dev@scidentify.info',
       license='MIT',
       py_modules=['pystripe_charge_wrapper.pystripe_charges'],
       classifiers=[
