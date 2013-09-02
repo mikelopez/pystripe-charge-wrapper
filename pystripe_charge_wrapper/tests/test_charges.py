@@ -1,8 +1,8 @@
-from unittest import TestCase, TestSuite, TestTextRunner
+from unittest import TestCase, TestSuite, TextTestRunner
 from decimal import Decimal
 
 try:
-    import test_settings
+    import test_settings as settings
 except ImportError:
     raise Exception("No test_settings found. Need API Keys")
     sys.exit(1)
@@ -15,8 +15,8 @@ class TestStripeCharges(TestCase):
     """Test the stripe charge functionality."""
 
     stripe_api_key = getattr(settings, "TEST_STRIPE_SECRET")
-    card = {'currency': "USD", 'amount': cl.get_price(), 
-            'exp_month': '1', 'exp_year': '2016', 
+    card = {'currency': "USD", 'amount': cl.get_price(),
+            'exp_month': '1', 'exp_year': '2016',
             'cvc': '222', 'number': '4242424242424242'}
 
     def setUp(self):

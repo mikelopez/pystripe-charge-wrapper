@@ -1,4 +1,5 @@
-from test_base import *
+from unittest import TestCase, TestSuite, TextTestRunner
+from decimal import Decimal
 
 from test_charges import TestStripeCharges
 
