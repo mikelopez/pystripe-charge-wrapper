@@ -134,6 +134,9 @@ class TestStripeCharges(unittest.TestCase):
         charge1 = cl.retrieve_charge()
         self.assertTrue(charge1, cl.retrieve_charge(id=new_charge))
         self.assertFalse(charge_id == charge1)
+        # the ID and OBJECT should be set to self
+        self.assertTrue(cl.stripe_id == charge1.get('id'))
+        self.assertTrue(cl.stripe_object.get('id') == charge1.get('id'))
 
 
 

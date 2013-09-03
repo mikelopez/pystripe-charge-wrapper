@@ -142,6 +142,7 @@ class StripeCharges(object):
             raise Exception("No valid ID sent!")
         try:
             self.stripe_object = stripe.Charge.retrieve(**kwargs)
+            self.stripe_id = self.stripe_object.__dict__.get('id')
             return self.stripe_object
         except Exception, e:
             raise Exception("Error Retrieving Charge %s" % e)
