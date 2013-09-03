@@ -51,12 +51,12 @@ class TestStripeCharges(unittest.TestCase):
 
     def test_to_cents(self):
         """Test the conversion of the price to cents."""
-        termpritn(i, "Test conversion of amount$ to pennies.")
+        termprint(i, "Test conversion of amount$ to pennies.")
         cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
-        self.assertEquals(self.to_cents(), 100)
-        self.assertEquals(self.to_cents(),
-                          int(Decimal(self.get_price() * 100)))
+        self.assertEquals(cl.to_cents(), 100)
+        self.assertEquals(cl.to_cents(),
+                          int(Decimal(cl.get_price() * 100)))
         
 
     def test_create_captured_charge(self):
@@ -98,11 +98,12 @@ class TestStripeCharges(unittest.TestCase):
         charge = cl.retrieve_charge(id=charge_id)
         self.assertTrue(charge)
         # refunds the most recent
-        result = self.assertTrue(cl.refund_charge())
+        result = self.assertTrue(cl.refund_charge(id=charge_id))
         termprint(w, result)
         # both charges should be the same, since charge_id
         # is the charge that is in self.stripe_object
-        self.assertEquals(cl.stripe_object.get('refunded'), True)
+        charge = cl.retrieve_charge(id=charge_id)
+        self.assertEquals(charge.get('refunded'), True)
 
 
     def test_retrieve_charges(self):
@@ -111,16 +112,28 @@ class TestStripeCharges(unittest.TestCase):
         cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
         charge_id = cl.create_charge(self.card, capture=False)
+        self.assertTrue(cl.stripe_object)
+        self.assertTrue(cl.stripe_id)
         try:
             charge = cl.retrieve_charge(id='ass')
             assert False, "Nah uh, need a valid integer."
-        except ValueError:
+        except Exception as e:
             assert True
-        # shoudl get the latest charge.
+        # shouldl get the latest charge by default
         charge1 = cl.retrieve_charge() 
-        charge2 = cl.retrieve_charge(id=self.id)
+        charge2 = cl.retrieve_charge(id=charge_id)
+        # stripe ids should match to charge_id
+        self.assertEquals(charge1.get('id'), charge2.get('id'))
+        self.assertTrue(cl.stripe_id == charge_id)
         # now test with a different order
         new_charge = cl.create_charge(self.card, captured=False)
+        self.assertFalse(cl.stripe_id == charge_id)
+        # the current self.stripe_id should be different
+        self.assertTrue(cl.stripe_id == new_charge)
+        # newest charge1 should be equal to self since its the last one made
+        charge1 = cl.retrieve_charge()
+        self.assertTrue(charge1, cl.retrieve_charge(id=new_charge))
+        self.assertFalse(charge_id == charge1)
 
 
 

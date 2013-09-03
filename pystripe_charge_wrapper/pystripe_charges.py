@@ -127,6 +127,7 @@ class StripeCharges(object):
             charge = self.retrieve_charge(id=kwargs.get('id'))
         except Exception, e:
             raise Exception("Refund Exception %s" % e)
+        charge.refund()
         stripe.api_key = None
         return self.stripe_object
 
@@ -136,6 +137,7 @@ class StripeCharges(object):
         stripe.api_key = self.get_api_key()
         if kwargs.get('expand'):
             expand = {'expand': ['customer']}
+        kwargs = self.check_for_id(kwargs)
         if not kwargs.get('id'):
             raise Exception("No valid ID sent!")
         try:
