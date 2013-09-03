@@ -1,5 +1,9 @@
+import sys
 from unittest import TestCase, TestSuite, TextTestRunner
 from decimal import Decimal
+
+sys.path.append('pystripe_charge_wrapper')
+sys.path.append('pystripe_charge_wrapper/tests')
 
 from test_charges import TestStripeCharges
 
