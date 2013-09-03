@@ -48,6 +48,7 @@ Creating a captured charge
 
 Create a captured charge (charge it immediately) by passing ``capture=True``. Leaving this value false or empty will default to False. When creating a charge, it will set the return stripe_id and stripe_object to the class (self)
 
+
 .. code-block:: python
 	from pystripe_charge_wrapper.pystripe_charges import *
 	cl = StripeCharges(stripe_api_key='abc123456fku')
@@ -62,6 +63,7 @@ Creating an uncaptured charge
 
 To create an uncaptured charge, all you need to do different is to pass ``capture=False`` or just leave it out entirely. The default capture value is False
 
+
 .. code-block:: python
 	from pystripe_charge_wrapper.pystripe_charges import *
 	cl = StripeCharges(stripe_api_key='abc123456fuku')
@@ -74,6 +76,7 @@ Setting a refund
 -----------------
 
 When setting a refund, you can explicitly pass the charge_id with the ``id`` argument, or you can leave it empty to use the last charge created (or order that was retrieved). It is better practice to just pass the id unless you're cool.
+
 
 .. code-block:: python
 	from pystripe_charge_wrapper.pystripe_charges import *
@@ -93,6 +96,7 @@ Capturing an uncapured charge
 
 You can capture a charge later that was created uncaptured (for card authorization purposes).
 Like all the other functions, you can explicitly define the ID of the charge you want to capture, or it will get the last charge that was created or retrieved from self
+
 
 .. code-block:: python
 	from pystripe_charge_wrapper.pystripe_charges import *
