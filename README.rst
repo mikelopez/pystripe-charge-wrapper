@@ -6,7 +6,7 @@ It currently supports creating captured/uncaptured charges, retrieving charges a
 
 
 .. image:: https://secure.travis-ci.org/mikelopez/pystripe-charge-wrapper.png?branch=master
-	:target: http://travis-ci.org/mikelopez/pystripe-charge-wrapper
+    :target: http://travis-ci.org/mikelopez/pystripe-charge-wrapper
 
 
 On ``refund_charge()``, ``capture_charge()``, ``create_charge()`` and ``retrieve_charge()`` methods, you can pass an optional id parameter to perform on a specific Charge. If you do not, it will use the last charge created, or the last order that was retrieved.
@@ -50,11 +50,11 @@ Create a captured charge (charge it immediately) by passing ``capture=True``. Le
 
 
 .. code-block:: python
-	from pystripe_charge_wrapper.pystripe_charges import *
-	cl = StripeCharges(stripe_api_key='abc123456fku')
-	stripe_charge_id = cl.create_charge(capture=True)
-	# get the stripe id....
-	sid = cl.stripe_id
+    from pystripe_charge_wrapper.pystripe_charges import *
+    cl = StripeCharges(stripe_api_key='abc123456fku')
+    stripe_charge_id = cl.create_charge(capture=True)
+    # get the stripe id....
+    sid = cl.stripe_id
 
 
 
@@ -65,10 +65,10 @@ To create an uncaptured charge, all you need to do different is to pass ``captur
 
 
 .. code-block:: python
-	from pystripe_charge_wrapper.pystripe_charges import *
-	cl = StripeCharges(stripe_api_key='abc123456fuku')
-	stripe_charge_id = cl.create_charge(capture=False)
-	# or stripe_charge_id = cl.create_charge()
+    from pystripe_charge_wrapper.pystripe_charges import *
+    cl = StripeCharges(stripe_api_key='abc123456fuku')
+    stripe_charge_id = cl.create_charge(capture=False)
+    # or stripe_charge_id = cl.create_charge()
 
 
 
@@ -79,15 +79,15 @@ When setting a refund, you can explicitly pass the charge_id with the ``id`` arg
 
 
 .. code-block:: python
-	from pystripe_charge_wrapper.pystripe_charges import *
-	cl = StripeCharges(stripe_api_key='abc123456fuku')
-	stripe_charge_id = cl.create_charge(capture=False)
-	# ^^ This is the stripe object/id that will return by leaving argument blank
-	get_charge = cl.retrieve_charge()
+    from pystripe_charge_wrapper.pystripe_charges import *
+    cl = StripeCharges(stripe_api_key='abc123456fuku')
+    stripe_charge_id = cl.create_charge(capture=False)
+    # ^^ This is the stripe object/id that will return by leaving argument blank
+    get_charge = cl.retrieve_charge()
 
-	# this OTHER charge will be set to self.stripe_id and stripe_object
-	get_another_charge = cl.retrieve_charge(id='some-ther-id')
-	# cl.retrieve_charge() will equal get_another_charge's ID/object
+    # this OTHER charge will be set to self.stripe_id and stripe_object
+    get_another_charge = cl.retrieve_charge(id='some-ther-id')
+    # cl.retrieve_charge() will equal get_another_charge's ID/object
 
 
 
@@ -99,10 +99,10 @@ Like all the other functions, you can explicitly define the ID of the charge you
 
 
 .. code-block:: python
-	from pystripe_charge_wrapper.pystripe_charges import *
-	cl = StripeCharges(stripe_api_key='abc123456fuku')
-	stripe_object = cl.capture_charge(id='some-long-id')
-	# stripe_object.get('refunded') will be True
+    from pystripe_charge_wrapper.pystripe_charges import *
+    cl = StripeCharges(stripe_api_key='abc123456fuku')
+    stripe_object = cl.capture_charge(id='some-long-id')
+    # stripe_object.get('refunded') will be True
 
 
 
