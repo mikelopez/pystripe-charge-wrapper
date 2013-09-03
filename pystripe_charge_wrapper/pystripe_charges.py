@@ -80,9 +80,12 @@ class StripeCharges(object):
         """
         capture = 'false'
         if kwargs.get('capture'):
-            capture = 'true'
+            if kwargs.get('capture', 'x') == 'true':
+                capture = 'true'
         if self.get_price() > 0:
             amount = self.to_cents()
+            if not amount:
+                raise Exception("Invalid Amount %s" % amount)
             try:
                 stripe.api_key = self.get_api_key()
                 if not self.stripe_customer:
@@ -101,38 +104,26 @@ class StripeCharges(object):
             except Exception, e:
                 raise Exception("Charge Exception: %s" % e)
             self.stripe_id = self.stripe_object.__dict__.get('id')
-            stripe.api_key = None
+        return self.stripe_id
 
 
-    def refund_charge(self):
+    def refund_charge(self, **kwargs):
         """Refunds a charge."""
         stripe.api_key = self.get_api_key()
-        self.retrieve_cjarge(
         try:
-            self.stripe_object = stripe.Charge.retrieve(id=self.stripe_id)
-        except Exception, e:
-            raise Exception("Error Retrieving Charge %s" % e)
-        try:
-            self.stripe_object.refund()
+            charge = self.retrieve_charge(id=kwargs.get('id'))
         except Exception, e:
             raise Exception("Refund Exception %s" % e)
-        stripe.api_key = None
 
 
     def retrieve_charge(self, **kwargs):
         """Get the stripe Charge() object and return."""
-        if kwargs.get('id'):
-            id = kwargs.get('id')
-        else:
-            id = self.stripe_id
-        if not id:
+        if kwargs.get('expand'):
+            expand = {'expand': ['customer']}
+        if not kwargs.get('id'):
             raise Exception("No valid ID sent!")
         try:
-            test_int = int(id)
-        except ValueError:
-            raise Exception("Not a valid numerical format for ID")
-        try:
-            self.stripe_object = stripe.Charge.retrieve(id=id)
+            self.stripe_object = stripe.Charge.retrieve(**kwargs)
             return self.stripe_object()
         except Exception, e:
             raise Exception("Error Retrieving Charge %s" % e)
@@ -144,20 +135,19 @@ class StripeCharges(object):
         the basic payment information.
         """
         stripe.api_key = self.get_api_key()
-        if expand:
-            kwargs = {'expand': ['customer']}
+        if not kwargs.get('id'):
+            kwargs['id'] = self.stripe_id
+        if not kwargs.get('id'):
+            kwargs['id'] = self.stripe_object.__dict__.get('id')
+
         # check for ID - use that one instead.
         else:
             # if no id is passed as kwarg, use charge in self.
-            try:
-                self.stripe_object = stripe.Charge.retrieve(id=self.stripe_id, **kwargs)
-            except Exception, e:
-                raise Exception("Error Retrieving Charge %s" % e)
+            self.retrieve_charge(**kwargs)
         try:
             self.stripe_object.capture()
         except Exception, e:
             raise Exception("Capture Exception  %s" % e)
-        stripe.api_key = None
 
 
     def delete_customer(self):

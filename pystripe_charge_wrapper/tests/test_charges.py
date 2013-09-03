@@ -38,20 +38,36 @@ class TestStripeCharges(TestCase):
     def test_charge(self):
         """Test the charges."""
         termprint(i, "Testing Charge...")
-        cl = self.__init_stripe()
-        self.assertEquals(getattr(cl, "stripe_api_key"), getattr(self, "stripe_api_key"))
+        cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
+        self.assertEquals(getattr(cl, "stripe_api_key"), 
+                          getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
         self.assertEquals(cl.get_price(), Decimal('1.00'))
         charge_id = cl.create_charge(self.card)
         response = cl.capture_charge()
+        termprint(e, "Charge ID %s" % charge_id)
+        termprint(e, "Charge Capture %s" % response)
+
+
+    def test_to_cents(self):
+        """Test the conversion of the price to cents."""
+        termpritn(i, "Test conversion of amount$ to pennies.")
+        cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
+        cl.set_price('1.00')
+        self.assertEquals(self.to_cents(), 100)
+        self.assertEquals(self.to_cents(),
+                          int(Decimal(self.get_price() * 100)))
         
 
     def test_create_captured_charge(self):
         """ Test creating a test charge. """
         termprint(i, "Test create captured charge...")
-        cl = self.__init_stripe()
+        cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
+        cl.set_price('1.00')
         charge_id = cl.create_charge(self.card)
         self.assertEquals(charge_id, cl.stripe_id)
+        termprint(e, charge_id)
+        termprint(e, cl.stripe_id)
         # test charge retrieval!
         self.assertTrue(cl.retrieve_charge(id=charge_id))
         # charge is already captured!
@@ -61,7 +77,8 @@ class TestStripeCharges(TestCase):
     def test_create_uncaptured_charge(self):
         """ Create an uncaptured charge by passing kwarg."""
         termprint(i, "Test create uncaptured charge.")
-        cl = self.__init_stripe()
+        cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
+        cl.set_price('1.00')
         charge_id = cl.create_charge(self.card, captured=False)
         self.assertEquals(charge_id, cl.stripe_id)
         # test charge retrieval!
@@ -74,18 +91,23 @@ class TestStripeCharges(TestCase):
     def test_refund(self):
         """ Test refunding an order """
         termprint(i, "Test create refund.")
-        cl = self.__init_stripe()
+        cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
+        cl.set_price('1.00')
         charge_id = cl.create_charge(self.card, captured=True)
         charge = cl.retrieve_charge(id=charge_id)
         self.assertTrue(charge)
         # refunds the most recent
-        result = self.assertTrue(cl.refund_charge(charge=charge))
+        result = self.assertTrue(cl.refund_charge())
+        # both charges should be the same, since charge_id
+        # is the charge that is in self.stripe_object
+        self.assertEquals(charge, result)
 
 
     def test_retrieve_charges(self):
         """Test retrieving the charge."""
         termprint(i, "Test retrieve charges...")
-        cl = self.__init_stripe()
+        cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
+        cl.set_price('1.00')
         charge_id = cl.create_charge(self.card, captured=False)
         try:
             charge = cl.retrieve_charge(id='ass')
