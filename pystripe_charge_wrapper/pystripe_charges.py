@@ -69,6 +69,16 @@ class StripeCharges(object):
         return int(Decimal(self.get_price() * 100))
 
 
+    def check_for_id(self, kwargs):
+        """Check kwargs for an ID attribute, if not
+        found, search for the recent Charge object or id."""
+        if not kwargs.get('id'):
+            kwargs['id'] = getattr(self, "stripe_id")
+        if not kwargs.get('id'):
+            kwargs['id'] = self.stripe_object.__dict__.get('id')
+        return kwargs
+
+
     def create_charge(self, card, **kwargs):
         """ Create a captured charge with card
         Card should be a dictionary with the following keys:
