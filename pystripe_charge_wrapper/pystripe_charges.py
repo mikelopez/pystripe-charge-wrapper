@@ -150,13 +150,8 @@ class StripeCharges(object):
         the basic payment information.
         """
         stripe.api_key = self.get_api_key()
-        if not kwargs.get('id'):
-            kwargs['id'] = self.stripe_id
-        if not kwargs.get('id'):
-            kwargs['id'] = self.stripe_object.__dict__.get('id')
-        # check for ID - use that one instead.
+        kwargs = self.check_for_id(kwargs)
 
-        # if no id is passed as kwarg, use charge in self.
         self.retrieve_charge(**kwargs)
         try:
             self.stripe_object.capture()
@@ -166,7 +161,8 @@ class StripeCharges(object):
 
 
     def delete_customer(self):
-        """Deletes the customer."""
+        """Deletes the customer.
+        TODO - modify for ID args"""
         stripe.api_key = self.get_api_key()
         if self.stripe_customer:
             try:
