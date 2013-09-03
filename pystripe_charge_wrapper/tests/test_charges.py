@@ -1,5 +1,5 @@
 import sys
-from unittest import TestCase, TestSuite, TextTestRunner
+import unittest
 from decimal import Decimal
 from termprint import *
 sys.path.append('../')
@@ -17,7 +17,7 @@ card_scenarios = {'card_declined': '4000000000000002',
 # debug types
 i, e, w = "INFO", "ERROR", "WARNING"
 
-class TestStripeCharges(TestCase):
+class TestStripeCharges(unittest.TestCase):
     """Test the stripe charge functionality."""
 
     stripe_api_key = STRIPE_API_KEY
