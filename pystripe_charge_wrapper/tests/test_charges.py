@@ -64,7 +64,7 @@ class TestStripeCharges(TestCase):
         termprint(i, "Test create captured charge...")
         cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
-        charge_id = cl.create_charge(self.card)
+        charge_id = cl.create_charge(self.card, capture=True)
         self.assertEquals(charge_id, cl.stripe_id)
         termprint(e, charge_id)
         termprint(e, cl.stripe_id)
@@ -78,7 +78,7 @@ class TestStripeCharges(TestCase):
         termprint(i, "Test create uncaptured charge.")
         cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
-        charge_id = cl.create_charge(self.card, captured=False)
+        charge_id = cl.create_charge(self.card, capture=False)
         self.assertEquals(charge_id, cl.stripe_id)
         # test charge retrieval!
         self.assertTrue(cl.retrieve_charge(id=charge_id))
@@ -94,15 +94,14 @@ class TestStripeCharges(TestCase):
         termprint(i, "Test create refund.")
         cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
-        charge_id = cl.create_charge(self.card, captured=True)
+        charge_id = cl.create_charge(self.card, capture=True)
         charge = cl.retrieve_charge(id=charge_id)
         self.assertTrue(charge)
         # refunds the most recent
         result = self.assertTrue(cl.refund_charge())
         # both charges should be the same, since charge_id
         # is the charge that is in self.stripe_object
-        self.assertEquals(charge, result)
-        self.assertEquals(cl.get('refunded'), 'true')
+        self.assertEquals(cl.stripe_object.get('refunded'), True)
 
 
     def test_retrieve_charges(self):
@@ -110,7 +109,7 @@ class TestStripeCharges(TestCase):
         termprint(i, "Test retrieve charges...")
         cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
-        charge_id = cl.create_charge(self.card, captured=False)
+        charge_id = cl.create_charge(self.card, capture=False)
         try:
             charge = cl.retrieve_charge(id='ass')
             assert False, "Nah uh, need a valid integer."

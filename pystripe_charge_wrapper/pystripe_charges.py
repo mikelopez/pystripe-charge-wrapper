@@ -90,8 +90,9 @@ class StripeCharges(object):
         stripe.api_key = self.get_api_key()
         capture = 'false'
         if kwargs.get('capture'):
-            if kwargs.get('capture', 'x') == 'true':
+            if not kwargs.get('capture', 'x') == 'false':
                 capture = 'true'
+        print "Trying to create order capture = %s" % capture
         if self.get_price() > 0:
             amount = self.to_cents()
             if not amount:
