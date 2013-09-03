@@ -99,6 +99,7 @@ class TestStripeCharges(TestCase):
         self.assertTrue(charge)
         # refunds the most recent
         result = self.assertTrue(cl.refund_charge())
+        termprint(w, result)
         # both charges should be the same, since charge_id
         # is the charge that is in self.stripe_object
         self.assertEquals(cl.stripe_object.get('refunded'), True)
