@@ -1,7 +1,9 @@
 pystripe-charge-wrapper
 ------------------------------
 
+
 [![Build Status](https://secure.travis-ci.org/mikelopez/pystripe-charge-wrapper.png?branch=master)](http://travis-ci.org/mikelopez/pystripe-charge-wrapper)
+
 
 
 On ``refund_charge()``, ``capture_charge()``, ``create_charge()`` and ``retrieve_charge()`` methods, you can pass an optional id parameter to perform on a specific Charge. If you do not, it will use the last charge created, or the last order that was retrieved.
