@@ -70,8 +70,7 @@ class TestStripeCharges(TestCase):
         termprint(e, cl.stripe_id)
         # test charge retrieval!
         self.assertTrue(cl.retrieve_charge(id=charge_id))
-        # charge is already captured!
-        self.assertRaises(cl.capture_charge(), Exception)
+        self.assertEquals(cl.stripe_object.get('captured'), True)
 
 
     def test_create_uncaptured_charge(self):
@@ -85,7 +84,9 @@ class TestStripeCharges(TestCase):
         self.assertTrue(cl.retrieve_charge(id=charge_id))
         self.assertTrue(charge_id)
         # charge is not captured!
+        self.assertEquals(cl.stripe_object.get('captured'), False)
         cl.capture_charge()
+        self.assertEquals(cl.stripe_object.get('captured'), True)
 
 
     def test_refund(self):
@@ -101,6 +102,7 @@ class TestStripeCharges(TestCase):
         # both charges should be the same, since charge_id
         # is the charge that is in self.stripe_object
         self.assertEquals(charge, result)
+        self.assertEquals(cl.get('refunded'), 'true')
 
 
     def test_retrieve_charges(self):

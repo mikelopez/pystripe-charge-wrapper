@@ -127,6 +127,7 @@ class StripeCharges(object):
         except Exception, e:
             raise Exception("Refund Exception %s" % e)
         stripe.api_key = None
+        return self.stripe_object
 
 
     def retrieve_charge(self, **kwargs):
@@ -154,10 +155,11 @@ class StripeCharges(object):
 
         self.retrieve_charge(**kwargs)
         try:
-            self.stripe_object.capture()
+            return self.stripe_object.capture()
         except Exception, e:
             raise Exception("Capture Exception  %s" % e)
         stripe.api_key = None
+        return self.stripe_object
 
 
     def delete_customer(self):
