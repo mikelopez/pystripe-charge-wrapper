@@ -50,6 +50,7 @@ Create a captured charge (charge it immediately) by passing ``capture=True``. Le
 
 
 .. code-block:: python
+
     from pystripe_charge_wrapper.pystripe_charges import *
     cl = StripeCharges(stripe_api_key='abc123456fku')
     stripe_charge_id = cl.create_charge(capture=True)
@@ -65,6 +66,7 @@ To create an uncaptured charge, all you need to do different is to pass ``captur
 
 
 .. code-block:: python
+
     from pystripe_charge_wrapper.pystripe_charges import *
     cl = StripeCharges(stripe_api_key='abc123456fuku')
     stripe_charge_id = cl.create_charge(capture=False)
@@ -79,6 +81,7 @@ When setting a refund, you can explicitly pass the charge_id with the ``id`` arg
 
 
 .. code-block:: python
+
     from pystripe_charge_wrapper.pystripe_charges import *
     cl = StripeCharges(stripe_api_key='abc123456fuku')
     stripe_charge_id = cl.create_charge(capture=False)
@@ -99,6 +102,7 @@ Like all the other functions, you can explicitly define the ID of the charge you
 
 
 .. code-block:: python
+
     from pystripe_charge_wrapper.pystripe_charges import *
     cl = StripeCharges(stripe_api_key='abc123456fuku')
     stripe_object = cl.capture_charge(id='some-long-id')
