@@ -94,7 +94,7 @@ When setting a refund, you can explicitly pass the charge_id with the ``id`` arg
 
 
 
-Capturing an uncapured charge
+Capturing an uncaptured charge
 ------------------------------
 
 You can capture a charge later that was created uncaptured (for card authorization purposes).
