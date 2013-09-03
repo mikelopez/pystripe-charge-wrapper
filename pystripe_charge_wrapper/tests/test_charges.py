@@ -7,9 +7,9 @@ from pystripe_charges import *
 
 try:
     import test_settings as settings
+    STRIPE_API_KEY = getattr(settings, "TEST_STRIPE_SECRET")
 except ImportError:
-    raise Exception("No test_settings found. Need API Keys")
-    sys.exit(1)
+    STRIPE_API_KEY = "tGN0bIwXnHdwOa85VABjPdSn8nWY7G7I"
 
 card_scenarios = {'card_declined': '4000000000000002',
                   'incorrect_number': '42424242424241'}
@@ -20,7 +20,7 @@ i, e, w = "INFO", "ERROR", "WARNING"
 class TestStripeCharges(TestCase):
     """Test the stripe charge functionality."""
 
-    stripe_api_key = getattr(settings, "TEST_STRIPE_SECRET")
+    stripe_api_key = STRIPE_API_KEY
     card = {'exp_month': '1', 'exp_year': '2016',
             'cvc': '222', 'number': '4242424242424242'}
 

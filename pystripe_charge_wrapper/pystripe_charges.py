@@ -35,7 +35,7 @@ class StripeCharges(object):
             self.set_api_key(stripe_api_key)
 
         if not self.get_api_key():
-            self.set_api_key('tGN0bIwXnHdwOa85VABjPdSn8nWY7G7I')
+            raise Exception("No Stripe API Key")
 
 
     def get_price(self):
