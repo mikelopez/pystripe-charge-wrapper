@@ -20,7 +20,6 @@ class StripeCharges(object):
 
     Creates & Refunds captured/uncaptured charges, retreives charges, 
     and handles charging the uncaptured charges.
-
     """
     stripe_api_key = None
     price = Decimal('0.00')
@@ -78,6 +77,7 @@ class StripeCharges(object):
          - cvc = the card cvc on the back
          - number = the card number
         """
+        stripe.api_key = self.get_api_key()
         capture = 'false'
         if kwargs.get('capture'):
             if kwargs.get('capture', 'x') == 'true':
@@ -104,29 +104,34 @@ class StripeCharges(object):
             except Exception, e:
                 raise Exception("Charge Exception: %s" % e)
             self.stripe_id = self.stripe_object.__dict__.get('id')
+        stripe.api_key = None
         return self.stripe_id
 
 
     def refund_charge(self, **kwargs):
         """Refunds a charge."""
         stripe.api_key = self.get_api_key()
+        kwargs = self.check_for_id(kwargs)
         try:
             charge = self.retrieve_charge(id=kwargs.get('id'))
         except Exception, e:
             raise Exception("Refund Exception %s" % e)
+        stripe.api_key = None
 
 
     def retrieve_charge(self, **kwargs):
         """Get the stripe Charge() object and return."""
+        stripe.api_key = self.get_api_key()
         if kwargs.get('expand'):
             expand = {'expand': ['customer']}
         if not kwargs.get('id'):
             raise Exception("No valid ID sent!")
         try:
             self.stripe_object = stripe.Charge.retrieve(**kwargs)
-            return self.stripe_object()
+            return self.stripe_object
         except Exception, e:
             raise Exception("Error Retrieving Charge %s" % e)
+        stripe.api_key = None
 
 
     def capture_charge(self, **kwargs):
@@ -139,23 +144,25 @@ class StripeCharges(object):
             kwargs['id'] = self.stripe_id
         if not kwargs.get('id'):
             kwargs['id'] = self.stripe_object.__dict__.get('id')
-
         # check for ID - use that one instead.
-        else:
-            # if no id is passed as kwarg, use charge in self.
-            self.retrieve_charge(**kwargs)
+
+        # if no id is passed as kwarg, use charge in self.
+        self.retrieve_charge(**kwargs)
         try:
             self.stripe_object.capture()
         except Exception, e:
             raise Exception("Capture Exception  %s" % e)
+        stripe.api_key = None
 
 
     def delete_customer(self):
         """Deletes the customer."""
+        stripe.api_key = self.get_api_key()
         if self.stripe_customer:
             try:
                 self.stripe_customer.delete()
                 self.stripe_customer = None
             except Exception, e:
                 raise Exception("Customer Exception  %s" % e)
+        stripe.api_key = None
 

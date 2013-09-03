@@ -83,7 +83,7 @@ class TestStripeCharges(TestCase):
         self.assertEquals(charge_id, cl.stripe_id)
         # test charge retrieval!
         self.assertTrue(cl.retrieve_charge(id=charge_id))
-        self.assertTrue(charge)
+        self.assertTrue(charge_id)
         # charge is not captured!
         cl.capture_charge()
 
