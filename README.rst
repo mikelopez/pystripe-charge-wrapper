@@ -42,6 +42,21 @@ By default, it creates uncaptured charges to later capture them.
 It is recommended to make a habit of always passing the ID parameter and/or calling retrieve_charge on a specific Charge that you want to work on.
 
 
+Retrieving a charge
+--------------------
+
+You can retrieve a charge to check the status or get any other information on it
+that the API defines.
+
+.. code-block:: python 
+
+    from pystripe_charge_wrapper.pystripe_charges import *
+    cl = StripeCharges(stripe_api_key='abc123456fku')
+    stripe_charge_id = cl.retrieve_charge(id='stripe-id')
+    # get the stripe id....
+    sid = cl.stripe_id
+
+
 
 Creating a captured charge
 ---------------------------

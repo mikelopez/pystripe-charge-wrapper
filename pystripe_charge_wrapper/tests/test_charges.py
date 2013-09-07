@@ -105,6 +105,16 @@ class TestStripeCharges(unittest.TestCase):
         charge = cl.retrieve_charge(id=charge_id)
         self.assertEquals(charge.get('refunded'), True)
 
+    def test_is_refunded(self):
+        """Checks if an order was successfully refunded."""
+        termprint(i, "Test is_refunded().")
+        cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
+        cl.set_price('1.00')
+        charge_id = cl.create_charge(self.card, capture=True)
+        charge = cl.retrieve_charge(id=charge_id)
+        self.assertTrue(charge)
+
+
 
     def test_retrieve_charges(self):
         """Test retrieving the charge."""
