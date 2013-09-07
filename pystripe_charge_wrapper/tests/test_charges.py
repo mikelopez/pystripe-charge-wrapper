@@ -117,16 +117,19 @@ class TestStripeCharges(unittest.TestCase):
         charge = cl.retrieve_charge(id=charge_id)
         self.assertTrue(charge)
         result = self.assertTrue(cl.refund_charge(id=charge_id))
-        # test by passing ID
+        # test by passing ID - this performs a lookup
         self.assertTrue(cl.is_refunded(id=charge_id))
-        # test by passing charge object
-        self.assertTrue(cl.is_refunded(object=charge)) 
+        # test by passing charge object - remains current before performing refund.
+        # you can pass object to just read from the current object assuming all
+        # refunds were done prior to being set
+        self.assertFalse(cl.is_refunded(object=charge)) 
 
 
     def test_is_captured(self):
         """Checks if the order was successfully captured.
         You can pass either an ID tring or the charge object itself
         to avoid unneeded lookups."""
+        termprint(i, 'Check if order is captured is_captured()')
         cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
         charge_id = cl.create_charge(self.card, capture=True)
@@ -135,16 +138,21 @@ class TestStripeCharges(unittest.TestCase):
         self.assertTrue(cl.is_captured(id=charge_id))
         # test by passing charge object
         self.assertTrue(cl.is_captured(object=charge))
+        cl = None
 
         # try with an uncatured charge
         cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
-        charge_id = cl.create_charge(self.card, capture=True)
+        charge_id = cl.create_charge(self.card, capture=False)
         charge = cl.retrieve_charge(id=charge_id)
-        # test by passing ID
-        self.assertFalse(cl.is_captured(id=charge_id))
-        # test by passing charge object
+        self.assertFalse(cl.is_captured(object=charge))
+        # test by passing object to avoid another lookup
+        result = cl.capture_charge(object=charge)
+        # test by passing charge object - remains current before performing refund.
+        # you can pass object to just read from the current object assuming all
+        # captures were done prior to being set
         self.assertTrue(cl.is_captured(object=charge))
+        self.assertTrue(cl.is_captured(id=charge_id))
 
 
     def test_retrieve_charges(self):
