@@ -105,8 +105,11 @@ class TestStripeCharges(unittest.TestCase):
         charge = cl.retrieve_charge(id=charge_id)
         self.assertEquals(charge.get('refunded'), True)
 
+
     def test_is_refunded(self):
-        """Checks if an order was successfully refunded."""
+        """Checks if an order was successfully refunded.
+        You can pass either an ID string or the charge object itself
+        to avoid unneeded lookups."""
         termprint(i, "Test is_refunded().")
         cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
         cl.set_price('1.00')
@@ -114,6 +117,24 @@ class TestStripeCharges(unittest.TestCase):
         charge = cl.retrieve_charge(id=charge_id)
         self.assertTrue(charge)
 
+        # test by passing ID
+        self.assertTrue(cl.is_refunded(charge_id))
+        # test by passing charge object
+        self.assertTrue(cl.is_refunded(charges)) 
+
+
+    def test_is_captured(self):
+        """Checks if the order was successfully captured.
+        You can pass either an ID tring or the charge object itself
+        to avoid unneeded lookups."""
+        cl = StripeCharges(stripe_api_key=getattr(self, "stripe_api_key"))
+        cl.set_price('1.00')
+        charge_id = cl.create_charge(self.card, capture=True)
+        charge = cl.retrieve_charge(id=charge_id)
+        # test by passing ID
+        self.assertTrue(cl.is_refunded(charge_id))
+        # test by passing charge object
+        self.assertTrue(cl.is_refunded(charges))
 
 
     def test_retrieve_charges(self):
