@@ -120,11 +120,11 @@ class StripeCharges(object):
 
 
     def refund_charge(self, **kwargs):
-        """Refunds a charge."""
+        """Refunds a charge.
+        Accepts kwargs: id, object"""
         stripe.api_key = self.get_api_key()
-        kwargs = self.check_for_id(kwargs)
         try:
-            charge = self.retrieve_charge(id=kwargs.get('id'))
+            charge = self.retrieve_charge(**kwargs)
         except Exception, e:
             raise Exception("Refund Exception %s" % e)
         charge.refund()
@@ -135,6 +135,8 @@ class StripeCharges(object):
     def retrieve_charge(self, **kwargs):
         """Get the stripe Charge() object and return."""
         stripe.api_key = self.get_api_key()
+        if kwargs.get('object'):
+            return kwargs.get('object')
         if kwargs.get('expand'):
             expand = {'expand': ['customer']}
         kwargs = self.check_for_id(kwargs)
@@ -155,8 +157,6 @@ class StripeCharges(object):
         the basic payment information.
         """
         stripe.api_key = self.get_api_key()
-        kwargs = self.check_for_id(kwargs)
-
         self.retrieve_charge(**kwargs)
         try:
             return self.stripe_object.capture()
@@ -177,4 +177,18 @@ class StripeCharges(object):
             except Exception, e:
                 raise Exception("Customer Exception  %s" % e)
         stripe.api_key = None
+
+
+    def is_refunded(self, **kwargs):
+        """Checks if an order is refunded."""
+        order = self.retrieve_charge(**kwargs)
+        return order.get('refunded', False)
+
+
+    def is_captured(self, **kwargs):
+        """Checks if an order is captured."""
+        order = self.retrieve_charge(**kwargs)
+        return order.get('captured', False)
+
+
 
