@@ -116,11 +116,10 @@ class TestStripeCharges(unittest.TestCase):
         charge_id = cl.create_charge(self.card, capture=True)
         charge = cl.retrieve_charge(id=charge_id)
         self.assertTrue(charge)
-
         # test by passing ID
-        self.assertTrue(cl.is_refunded(charge_id))
+        self.assertTrue(cl.is_refunded(id=charge_id))
         # test by passing charge object
-        self.assertTrue(cl.is_refunded(charges)) 
+        self.assertTrue(cl.is_refunded(object=charges)) 
 
 
     def test_is_captured(self):
@@ -132,9 +131,9 @@ class TestStripeCharges(unittest.TestCase):
         charge_id = cl.create_charge(self.card, capture=True)
         charge = cl.retrieve_charge(id=charge_id)
         # test by passing ID
-        self.assertTrue(cl.is_refunded(charge_id))
+        self.assertTrue(cl.is_captured(id=charge_id))
         # test by passing charge object
-        self.assertTrue(cl.is_refunded(charges))
+        self.assertTrue(cl.is_captured(object=charges))
 
 
     def test_retrieve_charges(self):
