@@ -102,8 +102,7 @@ When setting a refund, you can explicitly pass the charge_id with the ``id`` arg
 
     from pystripe_charge_wrapper.pystripe_charges import *
     cl = StripeCharges(stripe_api_key='abc123456fuku')
-    stripe_object = cl.capture_charge(id='some-long-id')
-    stripe_object.refund()
+    stripe_object = cl.refund_charge(id='some-long-id')
     # stripe_object.get('refunded') will be True
 
 
