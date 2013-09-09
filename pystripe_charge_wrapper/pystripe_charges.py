@@ -64,7 +64,7 @@ class StripeCharges(object):
 
     def to_cents(self):
         """ Convert the price down to cents """
-        if self.get_price() == 0:
+        if not self.get_price():
             return 0
             # over a dollah
         return int(Decimal(self.get_price() * 100))
