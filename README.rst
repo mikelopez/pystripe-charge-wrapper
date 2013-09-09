@@ -67,10 +67,11 @@ Create a captured charge (charge it immediately) by passing ``capture=True``. Le
 .. code-block:: python
 
     from pystripe_charge_wrapper.pystripe_charges import *
+    card = {'number': '4242424242424242', 'exp_month': '01', 
+            'exp_year': '2016', 'cvc': '222'}
     cl = StripeCharges(stripe_api_key='abc123456fku')
-    stripe_charge_id = cl.create_charge(capture=True)
-    # get the stripe id....
-    sid = cl.stripe_id
+    cl.set_price('1.00')
+    stripe_charge_id = cl.create_charge(card=card, capture=True)
 
 
 
@@ -83,9 +84,11 @@ To create an uncaptured charge, all you need to do different is to pass ``captur
 .. code-block:: python
 
     from pystripe_charge_wrapper.pystripe_charges import *
+    card = {'number': '4242424242424242', 'exp_month': '01', 
+            'exp_year': '2016', 'cvc': '222'}
     cl = StripeCharges(stripe_api_key='abc123456fuku')
+    cl.set_price('1.00')
     stripe_charge_id = cl.create_charge(capture=False)
-    # or stripe_charge_id = cl.create_charge()
 
 
 
@@ -99,13 +102,9 @@ When setting a refund, you can explicitly pass the charge_id with the ``id`` arg
 
     from pystripe_charge_wrapper.pystripe_charges import *
     cl = StripeCharges(stripe_api_key='abc123456fuku')
-    stripe_charge_id = cl.create_charge(capture=False)
-    # ^^ This is the stripe object/id that will return by leaving argument blank
-    get_charge = cl.retrieve_charge()
-
-    # this OTHER charge will be set to self.stripe_id and stripe_object
-    get_another_charge = cl.retrieve_charge(id='some-ther-id')
-    # cl.retrieve_charge() will equal get_another_charge's ID/object
+    stripe_object = cl.capture_charge(id='some-long-id')
+    stripe_object.refund()
+    # stripe_object.get('refunded') will be True
 
 
 
@@ -121,7 +120,7 @@ Like all the other functions, you can explicitly define the ID of the charge you
     from pystripe_charge_wrapper.pystripe_charges import *
     cl = StripeCharges(stripe_api_key='abc123456fuku')
     stripe_object = cl.capture_charge(id='some-long-id')
-    # stripe_object.get('refunded') will be True
-
+    stripe_object.capture()
+    # stripe_object.get('captured') will be True
 
 
