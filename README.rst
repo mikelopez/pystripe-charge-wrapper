@@ -52,7 +52,7 @@ that the API defines.
 
     from pystripe_charge_wrapper.pystripe_charges import *
     cl = StripeCharges(stripe_api_key='abc123456fku')
-    stripe_charge_id = cl.retrieve_charge(id='stripe-id')
+    stripe_charge_id = cl.retrieve_charge(id='stripe-charge-id')
     # get the stripe id....
     sid = cl.stripe_id
 

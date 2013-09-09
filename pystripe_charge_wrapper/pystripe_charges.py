@@ -57,6 +57,7 @@ class StripeCharges(object):
         """Sets the price to charge a customer."""
         try:
             setattr(self, 'price', Decimal(value))
+            return getattr(self, 'price')
         except InvalidOperation:
             raise Exception("Invalid numeric price %s" % value)
 
